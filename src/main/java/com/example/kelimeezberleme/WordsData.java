@@ -77,4 +77,22 @@ public class WordsData {
         }
         return words;
     }
+    public static String getTurkish(Connection con,String word) throws SQLException {//Karşılaştırma yapmak için verilen kelimenin türkesini gönderir.
+        PreparedStatement getTurkish=con.prepareStatement("select turkce from "Kelimeler" where ingilizce='"+word+"'");
+        ResultSet rs=getTurkish.executeQuery();
+        String cevap = "";
+        while (rs.next()){
+            cevap= rs.getString(1);
+        }
+        return cevap;
+    }
+    public static void updateCorrectWord(Connection con,String word) throws SQLException {//Kelime "doğru" olarak güncellenir.
+        PreparedStatement updateWord=con.prepareStatement("update "Kelimeler" set dogrusayisi=dogrusayisi+1,cikmasayisi=cikmasayisi+1,dogrubilmesayisi=dogrubilmesayisi+1,sonTarih=CURRENT_DATE where ingilizce='"+word+"'");
+        updateWord.executeUpdate();
+    }
+
+    public static void updateWrongWord(Connection con,String word) throws SQLException {//Kelime "yanlış" olarak güncellenir.
+        PreparedStatement updateWord=con.prepareStatement("update "Kelimeler" set dogrusayisi=0,cikmasayisi=cikmasayisi+1,sonTarih=CURRENT_DATE where ingilizce='"+word+"'");
+        updateWord.executeUpdate();
+    }
 }
