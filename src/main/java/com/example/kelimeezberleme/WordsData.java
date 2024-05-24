@@ -57,4 +57,24 @@ public class WordsData {
         PreparedStatement setQuestionNumber = con.prepareStatement("update \"Kullanici\" set sorusayisi="+number+" WHERE isim='"+name+"'");
         setQuestionNumber.executeUpdate();
     }
+    public static List getList(Connection con, String name) throws SQLException { //Kelimeleri içeren bir liste oluşturur.
+        List<Words> words = new ArrayList<>(List.of());
+        String sql = "SELECT ingilizce,turkce,cumle,cikmasayisi,dogrubilmesayisi,dogrusayisi,sontarih FROM "Kelimeler" WHERE parola=(SELECT parola FROM "Kullanici" WHERE isim='"+name+"')";
+        PreparedStatement pst = con.prepareStatement(sql);
+        ResultSet rs = pst.executeQuery();
+        while(rs.next()){
+            int percent=0;
+            if(rs.getInt(5)!=0){
+                percent=rs.getInt(5)*100/rs.getInt(4);
+            }
+            String percentString= String.valueOf(percent);
+            LocalDate date = rs.getDate(7).toLocalDate();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate cmp = LocalDate.parse("2024-01-01", formatter);
+            if(date.isEqual(cmp))
+                date=null;
+            words.add(new Words(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),percentString,rs.getString(6),date));
+        }
+        return words;
+    }
 }
