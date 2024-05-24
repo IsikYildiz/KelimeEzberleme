@@ -32,6 +32,41 @@ public class TestScreenController {
 
     private List<String> words;
     @FXML
+    void answerQuestion(ActionEvent event) throws SQLException {//Alınan listedeki kelimeler bitene kadar sorular sorulur.
+        Connection con=Data.connect();
+        if(!answer.getText().isEmpty()){
+            if(answer.getText().equalsIgnoreCase(WordsData.getTurkish(con,words.get(i)))){
+                WordsData.updateCorrectWord(con,words.get(i));
+                if(!words.get(i).equals(words.getLast())){
+                    question.setText("'"+words.get(i+1)+"' kelimesinin türkçe karşılığı nedir?");
+                    i++;
+                    con.close();
+                }
+                else{
+                    answer.setVisible(false);
+                    answerButton.setVisible(false);
+                    question.setVisible(false);
+                    endButton.setVisible(true);
+                }
+            }
+            else {
+                WordsData.updateWrongWord(con,words.get(i));
+                if(!words.get(i).equals(words.getLast())) {
+                    question.setText("'" + words.get(i + 1) + "' kelimesinin türkçe karşılığı nedir?");
+                    i++;
+                    con.close();
+                }
+                else{
+                    answer.setVisible(false);
+                    answerButton.setVisible(false);
+                    question.setVisible(false);
+                    endButton.setVisible(true);
+                }
+            }
+        }
+        con.close();
+    }
+    @FXML
     void startTest(ActionEvent event) throws SQLException {//Test başlatılır.
         Connection con=Data.connect();
         words=WordsData.getTestList(con,LoginScreenController.getNameString());
