@@ -31,7 +31,17 @@ public class TestScreenController {
     private int i=0;
 
     private List<String> words;
-
+    @FXML
+    void startTest(ActionEvent event) throws SQLException {//Test başlatılır.
+        Connection con=Data.connect();
+        words=WordsData.getTestList(con,LoginScreenController.getNameString());
+        answer.setVisible(true);
+        answerButton.setVisible(true);
+        question.setVisible(true);
+        question.setText("'"+words.get(i)+"' kelimesinin türkçe karşılığı nedir?");
+        startTestButton.setVisible(false);
+        con.close();
+    }
     @FXML
     void endTest(ActionEvent event) { //Testi bitirip ana menüye dönülür.
         try {
