@@ -32,5 +32,13 @@ public class TestScreenController {
 
     private List<String> words;
 
-
+    @FXML
+    void endTest(ActionEvent event) { //Testi bitirip ana menüye dönülür.
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("mainmenu-screen.fxml"));
+            endButton.getScene().setRoot(root);
+        } catch (Exception e) {
+            System.out.println("Başarısız");
+        }
+    }
 }
