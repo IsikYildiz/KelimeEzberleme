@@ -75,8 +75,49 @@ public class WordsData {
                 date=null;
             words.add(new Words(rs.getString(1),rs.getString(2),rs.getString(3),rs.getString(4),percentString,rs.getString(6),date));
         }
+        return words;   
+    }
+
+    public static List getTestList(Connection con,String name) throws SQLException {
+        List<String> words=new ArrayList<>();
+        PreparedStatement oneday=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"')and dogruSayisi=1 and sonTarih <=current_timestamp - interval '1 day' ");
+        PreparedStatement week=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"')and dogruSayisi=2 and sonTarih <=current_timestamp - interval '7 day' ");
+        PreparedStatement month=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"')and dogruSayisi=3 and sonTarih <=current_timestamp - interval '1 month' ");
+        PreparedStatement month3=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"')and dogruSayisi=4 and sonTarih <=current_timestamp - interval '3 month'  ");
+        PreparedStatement month6=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"') and dogruSayisi=5 and sonTarih <=current_timestamp - interval '6 month' ");
+        PreparedStatement year=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"') and dogruSayisi=6 and sonTarih <=current_timestamp - interval '1 year' ");
+        PreparedStatement random=con.prepareStatement("Select ingilizce from \"Kelimeler\" WHERE parola=(SELECT parola FROM \"Kullanici\" WHERE isim='"+name+"') and dogruSayisi=0 limit "+getQuestionNumber(con,LoginScreenController.getNameString())+" ");
+        ResultSet rs=oneday.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=week.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=month.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=month3.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=month6.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=year.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
+        rs=random.executeQuery();
+        while (rs.next()){
+            words.add(rs.getString(1));
+        }
         return words;
     }
+    
     public static String getTurkish(Connection con,String word) throws SQLException {//Karşılaştırma yapmak için verilen kelimenin türkesini gönderir.
         PreparedStatement getTurkish=con.prepareStatement("select turkce from "Kelimeler" where ingilizce='"+word+"'");
         ResultSet rs=getTurkish.executeQuery();
